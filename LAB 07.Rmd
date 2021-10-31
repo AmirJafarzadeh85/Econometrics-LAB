@@ -1,0 +1,214 @@
+---
+title: "LAB 07"
+author: "Amir Jafarzadeh"
+date: "31/10/2021"
+output: html_document
+---
+
+```{r}
+
+
+require (data.table)
+require(sandwich)
+require(lmtest)
+require (stargazer)
+
+set.seed(1984)
+x1 <- rnorm(n = 10000, mean = 0 , sd = 3)  # create indep. var. 1
+x2 <- rnorm(n = 10000, mean = 0, sd = 4)   # create indep. var. 2
+e <- rnorm(n = 10000, mean = 0, sd = 2)    # create error
+y <- 2 + 3*x1 + 4*x2 + e                   # create y according to population model
+
+dt.population <- data.table( y, x1, x2)   # creates tables
+dt.population <- dt.population[order(y)]
+dt.population                             # shows first and last entries of table
+
+r.sample.rows <- sample(1:nrow(dt.population), size = 100)
+r.sample.rows                             # shows the vector of 100 randomly selected row numbers
+
+
+r.sample <- dt.population[r.sample.rows,] # select the rows according to random sample
+head(r.sample) # show selection (note that the row numbers are the ones that were randomly selected abo
+
+
+summary(lm( y ~ x1 + x2, data = r.sample))
+
+
+nr.sample <- dt.population[1:100,]        # select a subset of the first 100 rows
+head(nr.sample)
+
+summary(lm( y ~ x1 + x2, data = nr.sample))
+
+
+
+
+
+set.seed(1984)
+x1 <- rnorm(n = 1000, mean = 0 , sd = 2) # create indep. var. 1
+x2 <- rep(3, times=1000) # create indep. var. 2 - a constant
+e <- rnorm(n = 1000, mean = 0, sd = 1) # create error
+y <- 2 + 3*x1 + 4*x2 + e # create y according to population model
+
+summary(lm( y ~ x1 + x2 ))
+
+
+set.seed(1984)
+x1 <- rnorm(n = 1000, mean = 0 , sd = 2)         # create indep. var. 1
+x2 <- 0.4*x1 + rnorm(n=1000, mean = 0, sd =0.01) # create indep. var. 2 - mean = x1
+e <- rnorm(n = 1000, mean = 0, sd = 1)           # create error
+y <- 2 + 3*x1 + 4*x2 + e                         # create y according to population model
+
+
+cor.test(x2,x1)
+
+summary(lm( y ~ x1 + x2 ))
+
+
+x1 <- rnorm(n = 1000, mean = 0 , sd = 3)  # create indep. var. 1
+x2 <- rnorm(n = 1000, mean = x1 , sd = 5) # create indep. var. 2
+plot(x1,x2)                               # plot x1 against x2
+
+
+
+
+cor.test(x = x1, y = x2) # get correlation coefficient between x1 and x2
+
+cor.test(x = x1, y = x2) # get correlation coefficient between x1 and x2
+
+
+
+e <- rnorm(n = 1000, mean = 0, sd = 1) # create error
+y <- 2 + 3*x1 + 4*x2 + e # create y according to population model
+out.y.full <- lm ( y ~ x1 + x2) # full model
+out.y.x1.om <- lm ( y ~ x1) # model with x2 ommitted
+stargazer(out.y.full, out.y.x1.om, type="text")
+
+
+
+set.seed(1984)
+x1 <- rnorm(n = 1000, mean = 0 , sd = 3) # create indep. var. 1
+x2 <- rnorm(n = 1000, mean = -x1 , sd = 5) # create indep. var. 2
+plot(x1,x2) # plot x1 against x2
+
+cor.test(x = x1, y = x2) # get correlation coefficient between x1 and x2
+
+
+e <- rnorm(n = 1000, mean = 0, sd = 1) # create error
+y <- 2 + 3*x1 - 4*x2 + e # create y according to population model
+out.y.full <- lm ( y ~ x1 + x2) # full model
+out.y.x1.om <- lm ( y ~ x1) # model with x2 ommitted
+stargazer(out.y.full, out.y.x1.om, type="text")
+
+
+set.seed(1984)
+x1 <- rnorm(n = 1000, mean = 0 , sd = 3) # create indep. var. 1
+x2 <- rnorm(n = 1000, mean = x1/3 , sd = 5) # create indep. var. 2
+plot(x1,x2) # plot x1 against x2
+
+
+cor.test(x = x1, y = x2) # get correlation coefficient between x1 and x2
+
+
+e <- rnorm(n = 1000, mean = 0, sd = 1) # create error
+y <- 2 + 3*x1 - 4*x2 + e # create y according to population model
+out.y.full <- lm ( y ~ x1 + x2) # full model
+out.y.x1.om <- lm ( y ~ x1) # model with x2 ommitted
+stargazer(out.y.full, out.y.x1.om, type="text")
+
+
+set.seed(1984)
+x1 <- rnorm(n = 1000, mean = 0 , sd = 3) # create indep. var. 1
+x2 <- rnorm(n = 1000, mean = -x1 , sd = 5) # create indep. var. 2
+plot(x1,x2) # plot x1 against x2
+
+cor.test(x = x1, y = x2) # get correlation coefficient between x1 and x2
+
+
+e <- rnorm(n = 1000, mean = 0, sd = 1) # create error
+y <- 2 + 3*x1 + 4*x2 + e # create y according to population model
+out.y.full <- lm ( y ~ x1 + x2) # full model
+out.y.x1.om <- lm ( y ~ x1) # model with x2 ommitted
+stargazer(out.y.full, out.y.x1.om, type="text")
+
+
+out.y.full <- lm ( y ~ x1 + x2)
+coeffs.full <- coefficients(out.y.full)
+b2_hat <- coeffs.full[3]
+b1_hat <- coeffs.full[2]
+out.part.x2 <- lm ( x2 ~ x1)
+coeffs.part <- coefficients(out.part.x2)
+delta <- coeffs.part[2]
+bias <- delta*b2_hat
+bias
+
+
+
+set.seed(1984)
+x1 <- rnorm(n = 1000, mean = 0 , sd = 3) # create indep. var. 1
+x2 <- rnorm(n = 1000, mean = 0 , sd = 4) # create indep. var. 1
+e <- rnorm(n = 1000, mean = 0, sd = 1) # create error
+s <- exp(0.4 * x1 ) # create function of x1
+
+yhet <- 2 + 3*x1 + 4*x2 + s*e # model with heteroskedasticity
+
+
+plot(x1, yhet)
+
+
+
+ynorm <- 2 + 3*x1 + 4*x2 + e # model with no heteroskedasticity
+summary(out.lm <- lm( ynorm ~ x1 + x2))
+
+plot(y = residuals(out.lm), x=x1) # residual plot without heteroskedasticity
+
+help(bptest)
+
+
+bptest( ynorm ~ x1 + x2 ) # high p-value, can’t reject null of constant variance
+
+bptest( yhet ~ x1 + x2 ) # low p-value, reject null of constant variance
+
+
+vcov(out.lm)
+
+
+diag(vcov(out.lm))
+
+sqrt( diag(vcov(out.lm)) ) # standard errors without adjustment
+
+
+sqrt( diag(vcovHC(out.lm)) ) # standard errors with adjustment
+
+vcovHC(out.lm)
+
+
+diag(vcovHC(out.lm))
+
+
+
+sqrt( diag(vcov(out.lm)) ) # standard errors without adjustment
+
+sqrt( diag(vcovHC(out.lm)) ) # standard errors with adjustment
+
+coeftest(out.lm) # before correction
+
+coeftest(out.lm, vcov. = vcovHC(out.lm)) # after correction
+
+
+
+
+
+dt.population[1,]
+dt.population[1:5,]
+
+c <- c(1,7,8)
+dt.population[c,]
+
+
+head(dt.population[,1])
+head(dt.population[,1:2])
+
+dt.population[1,1]
+dt.population[1:2,1:2]
+
+```
