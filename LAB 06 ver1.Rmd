@@ -3,9 +3,9 @@ title: "LAB 06"
 author: "Amir Jafarzadeh"
 date: "31/10/2021"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 
 ```{r }
