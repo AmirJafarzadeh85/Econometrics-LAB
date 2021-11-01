@@ -1,0 +1,102 @@
+---
+title: "LAB 06-problem 02"
+author: "Amir Jafarzadeh"
+date: "01/11/2021"
+output: pdf_document
+---
+
+```{r}
+setwd ("//ueahome/eresssf1/sba21guu/data/NTProfile/Desktop/econometrics/LAB 06")
+
+load("ceosal2.RData")
+
+#Activating Librarires
+
+library ("data.table")
+library ("stargazer")
+library ("ggplot2")
+# Renam of data
+dt.salaries <- data.table(data)
+rm(data)
+
+#i 
+lm1 <- lm (log(salary) ~ log(sales) + log(mktval), data= dt.salaries)
+stargazer(lm1 , type = "text")
+
+##Results: log(salary)= 4.621 + 0.162*log(sales) +  0.107*log(mktval)
+###B2 and B3 which are coeeficients of slae and mktval are significant in 0.01 and 0.05 respectively. 
+
+#ii 
+
+lm2 <- lm (log(salary) ~ log(sales) + log(mktval) + profits, data= dt.salaries)
+stargazer(lm2 , type = "text")
+
+##Results: log(salary)= 4.687 +   0.161*log(sales) +  0.098*log(mktval) +   0.00004*profits
+###B2 and B3 and b4 which are coeeficients of slae and mktval and profits are significant in 0.05 and 0.1 and 0.01 respectively. 
+###because there are some firms with negative profit, profits cannot be included in logarithmic form. 
+
+##iii 
+###once the mktval increases 100%, then the salaries of CEOs increase 9.8%. 
+###yes, since std of it is (0.064), so it is significant in the significant level of 0.1 
+
+
+##iv
+###once the profits increases 100%, then the salaries of CEOs increase 0.04%. 
+###yes, since std of it is (0.0002), so it is significant in the significant level of 0.01 
+
+##v 
+lm3 <- lm (log(salary) ~ log(sales) + log(mktval) + profits + ceoten+ comten, data= dt.salaries)
+stargazer(lm3 , type = "text")
+###Since the coeficient of ceotensq is 0.017, so once ceoten increases 1%, the salaries increase 1.7%. 
+
+##vi) the coeficients of ceoten and comten are 0.017 and -0.010 respectively which means that 1% increases in ceoten, can increase ceoten 1.7 and decrease comten 1% 
+
+##vii) since the coefficient of comten is negative, since if comten increases which means longer tenure with the company, the salaries decrease. 
+
+
+##viii) 
+ new.salar <- data.table(sales=6200, mktval=23200, profits=966, ceoten=2, comten=9)
+ new.salar
+ my.pred <- predict(lm3, newdata = new.salar)
+ my.pred
+
+ ## whith this methid, we should calculat one by one. 
+ft.val <- fitted.values(lm3)
+ft.val
+
+###it can show the results of all salaries 
+
+
+
+##ix 
+summary(lm3)
+summary (lm3)$r.squared 
+## so the R2 would be  0.3490874
+
+##x
+res.salar <- residuals(lm3)
+res.salar  ##calculation of the Residuals
+
+
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
